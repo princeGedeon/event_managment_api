@@ -3,6 +3,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.safestring import mark_safe
 
+
 # Create your models here.
 # specifying choices
 
@@ -102,3 +103,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         return mark_safe('<img src="{}" width="150" height="150" />'.format(self.picture.url))
 
     image_tag.short_description = 'Image'
+

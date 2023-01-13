@@ -2,9 +2,10 @@ import datetime
 
 from django.db import models
 
-from accounts.models import User
+
 from django.utils.safestring import mark_safe
 
+from accounts.models import User
 
 TYPE_EVENT = (
     ("PUBLIC", "PUBLIC"),
@@ -16,6 +17,10 @@ STATUS_EVENT = (
     ("CLOSED", "CLOSED"),
 )
 
+STATUS_GUEST = (
+    ("EN_COURS", "EN_COURS"),
+    ("VALIDE", "VALIDE"),
+)
 # Create your models here.
 class Categorie(models.Model):
     preview=models.ImageField(upload_to="categorie_images",default="default2.jpg")
@@ -41,6 +46,7 @@ class Event(models.Model):
     start_date = models.DateTimeField(verbose_name="Date de debut de l'évenement",default=datetime.datetime.now())
     end_date_inscription = models.DateTimeField(verbose_name="Date cloture de l'inscription")
     status=models.CharField(max_length=100,default="ACTIVE",choices=STATUS_EVENT)
+    guests = models.ManyToManyField(User, through='Guest',related_name="guests")
     location = models.CharField(max_length=255,default="En ligne")
     number_phone = models.CharField(max_length=20)
     latitude = models.FloatField(default=0.0)
@@ -54,3 +60,15 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+class Guest(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=255,choices=STATUS_GUEST,default="EN_COURS")
+
+    def __str__(self):
+        return  f"Invité {self.user} pour {self.event}"
+
+

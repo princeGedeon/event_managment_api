@@ -1,24 +1,38 @@
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 
 from events.models import Event
 
 from events.serializers import EventSerializer
 
 from events.permissions import IsPremiumUser
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from events.serializers import EventAttendeesSerializer
+
 
 # Create your views here.
+class EventListAPIView(ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('category', 'is_active','type')
+
+class EventAttendeesAPIView(generics.RetrieveAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventAttendeesSerializer
+    lookup_field = 'id'
+
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = (IsPremiumUser,)
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category','is_active')
+    filterset_fields = ('category','is_active','type')
 
     def get_queryset(self):
         user = self.request.user
