@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import models
-
+from django.utils import timezone
 
 from django.utils.safestring import mark_safe
 
@@ -44,6 +44,7 @@ class Event(models.Model):
     category=models.ForeignKey(Categorie,on_delete=models.CASCADE)
     owner=models.ForeignKey(User,on_delete=models.CASCADE)
     start_date = models.DateTimeField(verbose_name="Date de debut de l'évenement",default=datetime.datetime.now())
+    end_date=models.DateTimeField(verbose_name="Date de fin de l'evenement", default=(timezone.now() + datetime.timedelta(hours=1)))
     end_date_inscription = models.DateTimeField(verbose_name="Date cloture de l'inscription")
     status=models.CharField(max_length=100,default="ACTIVE",choices=STATUS_EVENT)
     guests = models.ManyToManyField(User, through='Guest',related_name="guests")
@@ -67,6 +68,9 @@ class Guest(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=255,choices=STATUS_GUEST,default="EN_COURS")
+    feedback = models.TextField(default="Je n'ai pas participé à l'evenement")
+    rating = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return  f"Invité {self.user} pour {self.event}"

@@ -3,7 +3,6 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.safestring import mark_safe
 
-
 # Create your models here.
 # specifying choices
 

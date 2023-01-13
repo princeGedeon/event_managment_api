@@ -10,6 +10,8 @@ from accounts.utils import Util
 
 from accounts.models import User
 
+from events.models import Guest
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2=serializers.CharField(style={'input_type':"password"},write_only=True)
@@ -125,3 +127,9 @@ class UpdateProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['picture']
+
+class GuestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Guest
+        fields = ('id', 'event', 'user', 'status','feedback','rating','created_at')
+        read_only_fields = ('event', 'user', 'created_at')
