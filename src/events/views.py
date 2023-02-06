@@ -21,6 +21,8 @@ from events.serializers import EventAttendeesSerializer
 from accounts.serializers import GuestSerializer
 from events.models import Guest
 
+from events.serializers import JoinSerailizer
+
 
 # Create your views here.
 class EventListAPIView(ListAPIView):
@@ -81,7 +83,7 @@ class FeedbackView(APIView):
         print(event.end_date)
         print(timezone.now())
         if event.end_date <timezone.now() :
-            guest = Guest.objects.get(event=event, user=request.user)
+            guest =get_object_or_404(Event,event=event, user=request.user)
             serializer = GuestSerializer(guest, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -104,3 +106,19 @@ class FeedbackListView(APIView):
         feedbacks = Guest.objects.filter(event=event)
         serializer = GuestSerializer(feedbacks, many=True)
         return Response(serializer.data)
+
+class JoinEventView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(
+        operation_description="Rejoindre event",
+
+        request_body=JoinSerailizer,
+
+    )
+    def post(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        if event.code_adhesion != request.data.get('code_adhesion'):
+            return Response({"error": "Incorrect admission code."}, status=status.HTTP_400_BAD_REQUEST)
+        guest, created = Guest.objects.get_or_create(event=event, user=request.user)
+        return Response({"status": "Successfully joined event."}, status=status.HTTP_200_OK)

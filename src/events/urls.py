@@ -6,7 +6,7 @@ from events.views import EventViewSet
 
 from events.views import UpgradeStandartView, UpgradePremiumView
 
-from events.views import EventListAPIView
+from events.views import EventListAPIView,JoinEventView
 
 from events.views import EventAttendeesAPIView,FeedbackView,FeedbackListView
 
@@ -15,6 +15,7 @@ router.register('myevent', EventViewSet, basename='event')
 
 
 urlpatterns=[
+    path("join/event/<int:event_id>",JoinEventView.as_view(),name="join_event"),
     path("myfeedback/<int:event_id>",FeedbackView.as_view(),name="myfeedback"),
     path("myevent/getfeedbacks/<int:event_id>",FeedbackListView.as_view(),name="list_feedbacks"),
     path('pass_to_premium',UpgradePremiumView.as_view(),name="PasstoPremium"),

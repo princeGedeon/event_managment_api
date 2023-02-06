@@ -16,3 +16,6 @@ class EventAttendeesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title','guests')
+
+class JoinSerailizer(serializers.Serializer):
+    code_adhesion=serializers.CharField(max_length=100)
