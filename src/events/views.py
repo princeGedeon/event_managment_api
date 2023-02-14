@@ -23,6 +23,8 @@ from events.models import Guest
 
 from events.serializers import JoinSerailizer
 
+from events.pagination import StandardResultsSetPagination
+
 
 # Create your views here.
 class EventListAPIView(ListAPIView):
@@ -30,11 +32,16 @@ class EventListAPIView(ListAPIView):
     serializer_class = EventSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category', 'is_active','type')
+    pagination_class = StandardResultsSetPagination
 
 class EventAttendeesAPIView(generics.RetrieveAPIView):
     queryset = Event.objects.all()
     serializer_class = EventAttendeesSerializer
     lookup_field = 'id'
+
+class EventDetailView(generics.RetrieveAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
@@ -61,7 +68,6 @@ class UpgradePremiumView(APIView):
 
 class UpgradeStandartView(APIView):
     permission_classes = (IsAuthenticated,)
-
     def post(self, request):
         user = request.user
         user.profile = "STANDART"
@@ -70,14 +76,12 @@ class UpgradeStandartView(APIView):
 
 class FeedbackView(APIView):
     permission_classes = [IsAuthenticated]
-
     @swagger_auto_schema(
         operation_description="Ajout feedback et notations",
 
         request_body=GuestSerializer,
 
     )
-
     def post(self, request, event_id):
         event = Event.objects.get(id=event_id)
         print(event.end_date)
