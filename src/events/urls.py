@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework import routers
 
 
-from events.views import EventViewSet
+from events.views import EventViewSet, EventWhoAttendeMe
 
 from events.views import UpgradeStandartView, UpgradePremiumView
 
@@ -22,7 +22,8 @@ urlpatterns=[
     path('pass_to_standart', UpgradeStandartView.as_view(), name="PasstoStandart"),
     path("event_list",EventListAPIView.as_view(),name="list_event_public"),
     path("all_attendes/<int:id>",EventAttendeesAPIView.as_view(),name="list_attendees"),
-    path("detail_event/<int:pk>",EventDetailView.as_view(),name="detail_event")
+    path("detail_event/<int:pk>",EventDetailView.as_view(),name="detail_event"),
+    path('event_list_guest',EventWhoAttendeMe.as_view(),name="list_event_guest")
 ]
 
 urlpatterns +=router.urls

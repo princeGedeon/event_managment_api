@@ -111,6 +111,19 @@ class FeedbackListView(APIView):
         serializer = GuestSerializer(feedbacks, many=True)
         return Response(serializer.data)
 
+class EventWhoAttendeMe(ListAPIView):
+    queryset=Event.objects.all()
+    serializer_class=EventSerializer
+    permission_classes=[IsAuthenticated,]
+
+    def get_queryset(self):
+        user = self.request.user
+        guest_events = Guest.objects.filter(user=user)
+        event_ids = [guest.event.id for guest in guest_events]
+        queryset = Event.objects.filter(id__in=event_ids)
+        return queryset
+
+
 class JoinEventView(APIView):
     permission_classes = (IsAuthenticated,)
 
