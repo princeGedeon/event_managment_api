@@ -2,11 +2,8 @@
 
 from events.models import Event,Categorie,Guest
 
-from django.contrib import admin
-import csv
-import io
 
-from django.http import HttpResponse
+import io
 from django.contrib import admin
 
 
